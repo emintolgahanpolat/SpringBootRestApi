@@ -49,9 +49,6 @@ public class AuthenticationController {
     private PasswordEncoder encoder;
 
     @Autowired
-    private CaptchaService captchaController;
-
-    @Autowired
     private CaptchaService captchaService;
 
     @GetMapping(value = "")
@@ -87,7 +84,7 @@ public class AuthenticationController {
 
     @PostMapping(value = "signin")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, @RequestHeader String captcha) {
-        if (!captchaController.validateCaptcha(captcha)) {
+        if (!captchaService.validateCaptcha(captcha)) {
             throw new ProcessException("Invalid Captcha");
         }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
@@ -116,7 +113,7 @@ public class AuthenticationController {
     @PostMapping(value = "signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User signUpRequest, @RequestHeader String captcha) throws ProcessException {
 
-        if (!captchaController.validateCaptcha(captcha)) {
+        if (!captchaService.validateCaptcha(captcha)) {
             throw new ProcessException("Invalid Captcha");
         }
         String password = signUpRequest.getPassword();
@@ -162,7 +159,7 @@ public class AuthenticationController {
         userRepository.save(signUpRequest);
 
 
-        return createAuthenticationToken(new AuthenticationRequest(signUpRequest.getUsername(), password), captchaController.generateCaptcha().getAnswer());
+        return createAuthenticationToken(new AuthenticationRequest(signUpRequest.getUsername(), password), captchaService.generateCaptcha().getAnswer());
     }
 
     @ApiOperation(value = "Kullanıcı Bilgisi Getir")

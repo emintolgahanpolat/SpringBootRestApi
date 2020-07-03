@@ -3,6 +3,9 @@ package com.emintolgahanpolat.api.controller;
 import com.emintolgahanpolat.api.model.Author;
 import com.emintolgahanpolat.api.exceptions.BindingErrorsResponse;
 import com.emintolgahanpolat.api.service.AuthorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+
 
 /**
  * Created by Keno&Kemo on 17.12.2017..
@@ -37,6 +41,14 @@ public class AuthorController {
         else if (allAuthors.isEmpty())
             return new ResponseEntity<>(allAuthors, HttpStatus.NO_CONTENT);
         else return new ResponseEntity<>(allAuthors, HttpStatus.OK);
+    }
+    @Autowired
+    MessageSource messageSource;
+    @Deprecated
+    @GetMapping(value ="deprecated/{param0}")
+    public ResponseEntity<String> getDeprecated(@PathVariable String param0) {
+        String[] params= new String[]{param0};
+       return new ResponseEntity<>(messageSource.getMessage("message.hello",params, LocaleContextHolder.getLocale()), HttpStatus.OK);
     }
 
     //@PreAuthorize("hasRole('ADMIN')")

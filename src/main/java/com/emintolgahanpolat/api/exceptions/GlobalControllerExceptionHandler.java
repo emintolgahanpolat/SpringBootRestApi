@@ -14,8 +14,8 @@ import java.util.Date;
 @ControllerAdvice
 class GlobalControllerExceptionHandler {
     @ExceptionHandler(value = AuthenticationException.class)
-    public ResponseEntity<Error> handleAuthenticationException(HttpServletRequest request, AuthenticationException e) {
-        Error error = new Error(new Date(),"AuthenticationException", e.getMessage(), request.getRequestURI());
+    public ResponseEntity<ErrorMessage> handleAuthenticationException(HttpServletRequest request, AuthenticationException e) {
+        ErrorMessage error = new ErrorMessage(new Date(),"AuthenticationException", e.getMessage(), request.getRequestURI());
         if (e instanceof BadCredentialsException)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error.status(HttpStatus.UNAUTHORIZED.toString()));
         else if (e instanceof DisabledException)

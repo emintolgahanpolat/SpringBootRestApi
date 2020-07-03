@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
-public class Error {
+public class ErrorMessage {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy. HH:mm a z")
     private Date timestamp;
     private String status;
@@ -12,14 +12,14 @@ public class Error {
     private String message;
     private String path;
 
-    public Error(Date timestamp, String error, String message, String path) {
+    public ErrorMessage(Date timestamp, String error, String message, String path) {
         this.timestamp = timestamp;
         this.error = error;
         this.message = message;
         this.path = path;
     }
 
-    public Error status(String httpStatus) {
+    public ErrorMessage status(String httpStatus) {
         setStatus(httpStatus);
         return this;
     }
