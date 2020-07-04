@@ -3,6 +3,7 @@ package com.emintolgahanpolat.api.controller;
 import com.emintolgahanpolat.api.exceptions.BindingErrorsResponse;
 import com.emintolgahanpolat.api.model.Book;
 import com.emintolgahanpolat.api.service.BookService;
+import io.swagger.annotations.Api;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @SuppressWarnings("Duplicates")
 @RestController
 @RequestMapping(value = "/books", produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+@Api(tags = "Kitap")
 public class BookController {
     private BookService bookService;
 

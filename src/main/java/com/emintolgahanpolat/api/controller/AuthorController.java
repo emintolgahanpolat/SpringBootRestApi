@@ -3,6 +3,8 @@ package com.emintolgahanpolat.api.controller;
 import com.emintolgahanpolat.api.model.Author;
 import com.emintolgahanpolat.api.exceptions.BindingErrorsResponse;
 import com.emintolgahanpolat.api.service.AuthorService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -23,10 +25,15 @@ import java.util.Optional;
 /**
  * Created by Keno&Kemo on 17.12.2017..
  */
-@SuppressWarnings("Duplicates")
+
+
 @RestController
-@RequestMapping(value = "/authors", produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+@RequestMapping(value = "/authors", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_XML_VALUE})
+@Api(tags = "Yazar")
 public class AuthorController {
+    @Autowired
+    MessageSource messageSource;
+
     private AuthorService authorService;
 
     public AuthorController(AuthorService authorService) {
@@ -42,8 +49,7 @@ public class AuthorController {
             return new ResponseEntity<>(allAuthors, HttpStatus.NO_CONTENT);
         else return new ResponseEntity<>(allAuthors, HttpStatus.OK);
     }
-    @Autowired
-    MessageSource messageSource;
+
     @Deprecated
     @GetMapping(value ="deprecated/{param0}")
     public ResponseEntity<String> getDeprecated(@PathVariable String param0) {
