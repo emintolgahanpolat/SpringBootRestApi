@@ -6,10 +6,13 @@ import com.emintolgahanpolat.api.configuration.security.AuthenticationResponse;
 import com.emintolgahanpolat.api.configuration.security.JWTUtil;
 import com.emintolgahanpolat.api.configuration.security.JwtUser;
 import com.emintolgahanpolat.api.configuration.security.user.*;
+import com.emintolgahanpolat.api.exceptions.CaptchaException;
 import com.emintolgahanpolat.api.exceptions.ProcessException;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,8 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
+@CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
 @RestController
 @RequestMapping(value = "", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE})
+@Api(tags = "Yetkilendirme")
 public class AuthenticationController {
 
     @Value("${jwt.header}")
@@ -56,6 +61,8 @@ public class AuthenticationController {
         return "Hoş Geldiniz.";
     }
 
+    @Autowired
+    MessageSource messageSource;
 
     //  var image = new Image();
     //  image.src = 'data:image/png;base64,'+ JSON.parse(document.getElementsByTagName("pre")[0].innerHTML).token;
@@ -64,7 +71,7 @@ public class AuthenticationController {
     @GetMapping(value = "captcha", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getCaptcha() {
         HashMap<String, String> map = new HashMap<>();
-        map.put("token", captchaService.generateCaptchaBase64());
+        map.put("captcha", captchaService.generateCaptchaBase64());
         return ResponseEntity.ok(map);
     }
 
@@ -81,11 +88,10 @@ public class AuthenticationController {
             @ApiResponse(code = 200, message = "Token")
     }
     )
-
-    @PostMapping(value = "signin")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, @RequestHeader String captcha) {
+    @PostMapping(value = "login")
+    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest, @RequestHeader String captcha) {
         if (!captchaService.validateCaptcha(captcha)) {
-            throw new ProcessException("Invalid Captcha");
+            throw new CaptchaException(messageSource.getMessage("error.invalidCaptcha",null, LocaleContextHolder.getLocale()));
         }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
@@ -110,7 +116,7 @@ public class AuthenticationController {
     }
 
     @ApiOperation(value = "Kayıt Ol")
-    @PostMapping(value = "signup")
+    @PostMapping(value = "signUp")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User signUpRequest, @RequestHeader String captcha) throws ProcessException {
 
         if (!captchaService.validateCaptcha(captcha)) {

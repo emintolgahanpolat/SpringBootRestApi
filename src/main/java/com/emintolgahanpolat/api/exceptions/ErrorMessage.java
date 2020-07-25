@@ -2,15 +2,18 @@ package com.emintolgahanpolat.api.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ErrorMessage {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy. HH:mm a z")
     private Date timestamp;
-    private String status;
+    private int status;
     private String error;
     private String message;
     private String path;
+    private List<FieldError> errors = new ArrayList<>();
 
     public ErrorMessage(Date timestamp, String error, String message, String path) {
         this.timestamp = timestamp;
@@ -19,7 +22,7 @@ public class ErrorMessage {
         this.path = path;
     }
 
-    public ErrorMessage status(String httpStatus) {
+    public ErrorMessage status(int httpStatus) {
         setStatus(httpStatus);
         return this;
     }
@@ -32,11 +35,11 @@ public class ErrorMessage {
         this.timestamp = timestamp;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -62,5 +65,13 @@ public class ErrorMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<FieldError> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<FieldError> errors) {
+        this.errors = errors;
     }
 }

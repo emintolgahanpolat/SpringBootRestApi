@@ -1,5 +1,7 @@
 package com.emintolgahanpolat.api.configuration.security;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 
@@ -8,6 +10,11 @@ public class AuthenticationRequest implements Serializable {
     private static final long serialVersionUID = -8445943548965154778L;
 
     private String username;
+    @Size(
+            min = 5,
+            max = 100,
+            message = "error.invalidPassword"
+    )
     private String password;
 
 
