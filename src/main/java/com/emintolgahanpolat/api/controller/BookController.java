@@ -4,6 +4,7 @@ import com.emintolgahanpolat.api.exceptions.BindingErrorsResponse;
 import com.emintolgahanpolat.api.model.Book;
 import com.emintolgahanpolat.api.service.BookService;
 import io.swagger.annotations.Api;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@SuppressWarnings("Duplicates")
+@CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
 @RestController
 @RequestMapping(value = "/books", produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
 @Api(tags = "Kitap")
@@ -29,8 +30,8 @@ public class BookController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Book>> getAllBooks(@RequestParam("page") int page , @RequestParam("size") int size) {
-        List<Book> allBooks = bookService.findAll();
+    public ResponseEntity<Page<Book>> getAllBooks(@RequestParam("page") int page , @RequestParam("size") int size) {
+        Page<Book> allBooks = bookService.getPaginatedBooks(page,size); //bookService.findAll();
         if (allBooks == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else if (allBooks.isEmpty())

@@ -1,8 +1,12 @@
 package com.emintolgahanpolat.api.service;
 
+import com.emintolgahanpolat.api.exceptions.ProcessException;
 import com.emintolgahanpolat.api.model.Book;
 import com.emintolgahanpolat.api.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,15 @@ public class BookService {
 
     public List<Book> findAll() {
         return bookRepository.findAll();
+    }
+
+    public Page<Book> getPaginatedBooks(int page,int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<Book> resultPage = bookRepository.findAll(pageable);
+        if (page > resultPage.getTotalPages()) {
+            throw new ProcessException("Not Found Page Number:" + page);
+        }
+        return resultPage;
     }
 
     public Optional<Book> findById(Long id) {
